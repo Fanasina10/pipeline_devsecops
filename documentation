@@ -1,0 +1,466 @@
+# Mise en place d'un pipeline CI/CD sécurisé pour le déploiement d'une application ReactJS, Django et MySQL
+
+## Présentation du projet
+
+Dans le cadre de mon projet réalisé à l'**École Nationale d'Informatique (ENI) Fianarantsoa**, j'ai conçu et déployé une architecture complète **CI/CD DevSecOps** pour une application web full-stack.
+
+L'application est composée de :
+
+* Un frontend développé avec **ReactJS (Vite)**.
+* Un backend développé avec **Django**.
+* Une base de données **MySQL**.
+
+L'objectif principal est d'automatiser l'ensemble du cycle de vie de l'application, depuis l'intégration du code jusqu'au déploiement en production, tout en intégrant des contrôles de sécurité et de qualité.
+
+Le pipeline mis en place permet :
+
+* l'automatisation du build ;
+* l'exécution des tests ;
+* l'analyse de sécurité du code source ;
+* l'analyse des dépendances ;
+* l'analyse des images Docker ;
+* le déploiement automatisé ;
+* le renforcement de la sécurité après mise en production.
+
+---
+
+# Objectifs du projet
+
+Les objectifs principaux sont :
+
+* Mettre en place un pipeline CI/CD automatisé.
+* Automatiser le processus de livraison d'une application web.
+* Intégrer la sécurité dans toutes les étapes du cycle de développement.
+* Détecter les vulnérabilités du code source et des dépendances.
+* Sécuriser les conteneurs Docker.
+* Déployer une infrastructure fiable dans le cloud.
+* Renforcer la sécurité de l'application en production.
+* Mettre en place une approche complète DevSecOps :
+
+```text
+Développement
+      |
+Tests
+      |
+Analyse sécurité
+      |
+Build
+      |
+Déploiement
+      |
+Surveillance
+```
+
+---
+
+# Architecture générale
+
+L'architecture déployée suit le modèle suivant :
+
+```text
+                         Développeur
+
+                              |
+                              |
+                         Git Repository
+
+                              |
+                              |
+                       GitLab CI/CD Pipeline
+
+                              |
+       -------------------------------------------------
+       |                 |                |             |
+       |                 |                |             |
+     Tests          SonarQube          Snyk        OWASP ZAP
+       |                 |                |             |
+       |          Qualité du code    Dépendances   Sécurité Web
+       |
+       |
+    Docker Build
+
+                              |
+                              |
+                     Images Docker
+
+                              |
+                              |
+                         Déploiement
+
+                              |
+                              |
+                    Google Cloud Platform
+
+                              |
+              --------------------------------
+              |              |               |
+          Frontend        Backend        Database
+          ReactJS         Django          MySQL
+
+
+                              |
+                              |
+                         Sécurisation
+
+              HTTPS + Certbot
+              Fail2ban
+              Logs
+```
+
+---
+
+# Environnement technique
+
+## Application
+
+### Frontend
+
+Technologies :
+
+* ReactJS
+* Vite
+* JavaScript
+
+Rôle :
+
+* Interface utilisateur.
+* Communication avec l'API backend.
+
+---
+
+### Backend
+
+Technologies :
+
+* Django
+* Python
+* API REST
+
+Rôle :
+
+* Gestion de la logique métier.
+* Authentification.
+* Communication avec la base de données.
+
+---
+
+### Base de données
+
+Technologie :
+
+* MySQL
+
+Rôle :
+
+* Stockage des données applicatives.
+
+---
+
+# Gestion du code source
+
+## Git
+
+Git est utilisé pour :
+
+* versionner le code source ;
+* gérer les modifications ;
+* travailler avec les branches ;
+* déclencher automatiquement les pipelines CI/CD.
+
+Le dépôt contient :
+
+```text
+application/
+
+├── frontend/
+│   └── ReactJS Vite
+│
+├── backend/
+│   └── Django
+│
+├── database/
+│
+├── docker-compose.yml
+│
+└── .gitlab-ci.yml
+```
+
+---
+
+# Conteneurisation avec Docker
+
+L'application est conteneurisée afin de garantir un environnement reproductible.
+
+Architecture Docker :
+
+```text
+              Docker Environment
+
+        +-------------------------+
+
+        |     React Container     |
+        |       Frontend          |
+
+        +-------------------------+
+
+        |     Django Container    |
+        |       Backend           |
+
+        +-------------------------+
+
+        |     MySQL Container     |
+        |      Database           |
+
+        +-------------------------+
+```
+
+Avantages :
+
+* isolation des composants ;
+* déploiement simplifié ;
+* environnement identique entre développement et production ;
+* meilleure portabilité.
+
+---
+
+# Pipeline CI/CD GitLab
+
+Le pipeline GitLab CI/CD automatise toutes les étapes du cycle de livraison.
+
+Workflow :
+
+```text
+Commit développeur
+
+        |
+        v
+
+GitLab CI Trigger
+
+        |
+        v
+
+Installation dépendances
+
+        |
+        v
+
+Tests automatiques
+
+        |
+        v
+
+Analyse qualité
+
+        |
+        v
+
+Analyse sécurité
+
+        |
+        v
+
+Construction images Docker
+
+        |
+        v
+
+Déploiement GCP
+```
+
+---
+
+# Analyse de qualité et sécurité
+
+## SonarQube
+
+SonarQube est utilisé pour analyser :
+
+* la qualité du code ;
+* les bugs potentiels ;
+* les vulnérabilités ;
+* la dette technique ;
+* la maintenabilité.
+
+---
+
+## Snyk
+
+Snyk permet d'analyser :
+
+* les dépendances applicatives ;
+* les bibliothèques vulnérables ;
+* les vulnérabilités connues (CVE).
+
+Il est également utilisé pour vérifier les images Docker.
+
+---
+
+## OWASP ZAP
+
+OWASP ZAP est intégré pour réaliser des tests de sécurité applicative.
+
+Objectifs :
+
+* détecter les vulnérabilités web ;
+* identifier les mauvaises configurations ;
+* tester l'exposition de l'application après déploiement.
+
+Exemples :
+
+* problèmes liés aux headers HTTP ;
+* failles d'injection ;
+* mauvaises configurations de sécurité.
+
+---
+
+# Déploiement Cloud
+
+## Google Cloud Platform (GCP)
+
+L'application est hébergée sur une infrastructure cloud.
+
+Le déploiement permet :
+
+* une disponibilité permanente du service ;
+* une exposition contrôlée de l'application ;
+* une gestion flexible des ressources.
+
+Architecture :
+
+```text
+              Internet
+
+                  |
+                  |
+             HTTPS 443
+
+                  |
+                  |
+            Application Web
+
+          -------------------
+          |        |        |
+       React    Django    MySQL
+```
+
+---
+
+# Sécurisation après déploiement
+
+## HTTPS avec Certbot
+
+Certbot est utilisé pour :
+
+* obtenir un certificat TLS ;
+* activer HTTPS ;
+* sécuriser les communications entre utilisateurs et serveur.
+
+---
+
+## Fail2ban
+
+Fail2ban est utilisé pour renforcer la sécurité du serveur.
+
+Fonctions :
+
+* analyse des logs ;
+* détection des tentatives suspectes ;
+* blocage automatique des adresses IP malveillantes.
+
+Exemple :
+
+```text
+Tentatives de connexion répétées
+
+          |
+          v
+
+Analyse Fail2ban
+
+          |
+          v
+
+Blocage automatique IP
+```
+
+---
+
+# Gestion des logs
+
+Les logs permettent :
+
+* le suivi des événements ;
+* le diagnostic des erreurs ;
+* l'analyse des incidents ;
+* l'amélioration de la sécurité.
+
+Sources :
+
+* logs applicatifs ;
+* logs système ;
+* logs Docker ;
+* logs sécurité.
+
+---
+
+# Scénario complet du pipeline
+
+## Déploiement d'une nouvelle version
+
+1. Le développeur modifie le code.
+2. Le code est envoyé vers GitLab.
+3. GitLab CI démarre automatiquement.
+4. Les tests sont exécutés.
+5. SonarQube analyse la qualité.
+6. Snyk vérifie les vulnérabilités.
+7. OWASP ZAP réalise les tests de sécurité.
+8. Les images Docker sont construites.
+9. L'application est déployée sur GCP.
+10. HTTPS et les protections serveur assurent la sécurité en production.
+
+---
+
+# Résultats obtenus
+
+Ce projet a permis de mettre en place :
+
+* une chaîne CI/CD complète ;
+* une architecture DevSecOps automatisée ;
+* un déploiement cloud sur GCP ;
+* une application conteneurisée avec Docker ;
+* une analyse automatique de sécurité ;
+* une protection après déploiement ;
+* un cycle complet de livraison sécurisé.
+
+---
+
+# Compétences développées
+
+* DevSecOps
+* GitLab CI/CD
+* Docker et Docker Compose
+* Cloud Computing (GCP)
+* Linux Administration
+* Sécurité applicative
+* SAST et DAST
+* Gestion des vulnérabilités
+* Déploiement d'applications web
+* Sécurisation serveur
+
+---
+
+# Améliorations possibles
+
+* Ajouter une supervision avec Prometheus et Grafana.
+* Ajouter une orchestration avec Docker Swarm ou Kubernetes.
+* Ajouter une gestion centralisée des logs avec ELK ou Wazuh.
+* Automatiser davantage les tests de sécurité.
+
+---
+
+# Conclusion
+
+Ce projet démontre la mise en œuvre d'une chaîne DevSecOps complète intégrant développement, automatisation CI/CD, analyse de sécurité, conteneurisation et déploiement cloud.
+
+L'objectif principal était de rapprocher le cycle de développement d'un environnement professionnel où la sécurité est intégrée dès les premières étapes jusqu'à l'exploitation en production.
